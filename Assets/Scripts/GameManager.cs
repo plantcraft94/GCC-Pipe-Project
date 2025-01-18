@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        Camera.main.orthographicSize = Mathf.Max(_level.Row, _level.Column) + 2f;
+        Camera.main.orthographicSize = Mathf.Max(_level.Row, _level.Column)/2f + 2f;
         Vector3 cameraPos = Camera.main.transform.position;
         cameraPos.x = _level.Column * 0.5f;
         cameraPos.y = _level.Row * 0.5f;
@@ -156,7 +156,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("WIN!");
         yield return new WaitForSeconds(2f);
-        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
 
 
