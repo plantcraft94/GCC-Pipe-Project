@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
     private Pipe[,] pipes;
     private List<Pipe> startPipes;
 
-
     private void Awake()
     {
         Instance = this;
@@ -155,9 +154,29 @@ public class GameManager : MonoBehaviour
     private IEnumerator GameFinished()
     {
         Debug.Log("WIN!");
+        _level.Column++;
+        _level.Row++;
+        GenerateLevelData(_level);
         yield return new WaitForSeconds(2f);
         UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
 
+
+    private void GenerateLevelData(LevelData levelData)
+    {
+        levelData.Data.Clear();
+        int totalCells = levelData.Row * levelData.Column;
+
+        levelData.Data.Add(12);
+        for (int i = 1; i < totalCells - 1; i++)
+        {
+            int rotation = Random.Range(0, 4);
+            int pipeType = Random.Range(3, 6);
+            int pipeData = rotation * 10 + pipeType;
+            levelData.Data.Add(pipeData);
+        }
+        levelData.Data.Add(01);
+        EditorUtility.SetDirty(levelData);
+    }
 
 }
