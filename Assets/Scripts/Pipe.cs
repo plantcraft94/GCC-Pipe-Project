@@ -65,6 +65,26 @@ public class Pipe : MonoBehaviour
             return;
         }
 
+        else if (GameManager.isPowerUp == true)
+        {
+            connectBoxes.Clear();
+            Destroy(currentPipe.transform.gameObject);
+            currentPipe = Instantiate(_pipePrefabs[6], transform);
+            currentPipe.transform.localPosition = Vector3.zero;
+            emptySprite = currentPipe.GetChild(1).GetComponent<SpriteRenderer>();
+            emptySprite.gameObject.SetActive(!IsFilled);
+            filledSprite = currentPipe.GetChild(0).GetComponent<SpriteRenderer>();
+            filledSprite.gameObject.SetActive(IsFilled);
+            for (int i = 2; i < currentPipe.childCount; i++)
+            {
+                connectBoxes.Add(currentPipe.GetChild(i));
+            }
+
+            GameManager.PowerCount--;
+            GameManager.isPowerUp = false;
+            return;
+        }
+
         rotation = (rotation + 1) % (maxRotation + 1);
         currentPipe.transform.eulerAngles = new Vector3(0, 0, rotation * rotationMultiplier);
     }
@@ -80,8 +100,9 @@ public class Pipe : MonoBehaviour
     {
         List<Pipe> result = new List<Pipe>();
 
-        foreach (var box in connectBoxes)
+        foreach (Transform box in connectBoxes)
         {
+
             RaycastHit2D[] hit = Physics2D.RaycastAll(box.transform.position, Vector2.zero, 0.1f);
             for (int i = 0; i < hit.Length; i++)
             {

@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
     private Pipe[,] pipes;
     private List<Pipe> startPipes;
 
+    public static bool isPowerUp = false;
+    public static int PowerCount = 2;
+
     private void Awake()
     {
         Instance = this;
@@ -97,7 +100,7 @@ public class GameManager : MonoBehaviour
 
         Queue<Pipe> check = new Queue<Pipe>();
         HashSet<Pipe> finished = new HashSet<Pipe>();
-        foreach (var pipe in startPipes)
+        foreach (Pipe pipe in startPipes)
         {
             check.Enqueue(pipe);
         }
@@ -156,6 +159,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("WIN!");
         _level.Column++;
         _level.Row++;
+        PowerCount++;
         GenerateLevelData(_level);
         yield return new WaitForSeconds(2f);
         UnityEngine.SceneManagement.SceneManager.LoadScene(1);
@@ -178,5 +182,12 @@ public class GameManager : MonoBehaviour
         levelData.Data.Add(01);
         EditorUtility.SetDirty(levelData);
     }
-
+    public void ActivePowerUp()
+    {
+        if (PowerCount > 0)
+        {
+            isPowerUp = !isPowerUp;
+        }
+        print(isPowerUp);
+    }
 }
