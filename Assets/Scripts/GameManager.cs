@@ -17,10 +17,13 @@ public class GameManager : MonoBehaviour
     public static bool isPowerUp = false;
     public static int PowerCount = 2;
 
+    [SerializeField] private GameObject _winText;
+
     private void Awake()
     {
         Instance = this;
         hasGameFinished = false;
+        _winText.SetActive(false);
         SpawnLevel();
     }
 
@@ -156,12 +159,12 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator GameFinished()
     {
-        Debug.Log("WIN!");
+        _winText.SetActive(true);
         _level.Column++;
         _level.Row++;
-        PowerCount++;
         GenerateLevelData(_level);
         yield return new WaitForSeconds(2f);
+        PowerCount++;
         UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
 
