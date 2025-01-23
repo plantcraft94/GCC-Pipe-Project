@@ -183,7 +183,6 @@ public class GameManager : MonoBehaviour
             levelData.Data.Add(pipeData);
         }
         levelData.Data.Add(01);
-        EditorUtility.SetDirty(levelData);
     }
     public void ActivePowerUp()
     {
