@@ -1,5 +1,6 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Pipe : MonoBehaviour
@@ -112,4 +113,23 @@ public class Pipe : MonoBehaviour
 
         return result;
     }
+    public bool IsConnectedTo(Pipe otherPipe, Vector2Int direction)
+    {
+        // Giả sử chúng ta có một danh sách các hướng hợp lệ cho từng loại pipe
+        Dictionary<int, Vector2Int[]> pipeConnections = new Dictionary<int, Vector2Int[]>()
+    {
+        { 3, new Vector2Int[] { new Vector2Int(1, 0), new Vector2Int(-1, 0) } }, // Pipe thẳng dọc
+        { 4, new Vector2Int[] { new Vector2Int(0, 1), new Vector2Int(-1, 0) } }, // Pipe chữ L
+        { 5, new Vector2Int[] { new Vector2Int(0, -1), new Vector2Int(1, 0), new Vector2Int(0, 1) } }, // Pipe 3 đường
+        { 6, new Vector2Int[] { new Vector2Int(-1, 0), new Vector2Int(1, 0), new Vector2Int(0, -1), new Vector2Int(0, 1) } } // Pipe 4 đường
+    };
+
+        if (!pipeConnections.ContainsKey(this.PipeType) || !pipeConnections.ContainsKey(otherPipe.PipeType))
+            return false;
+
+        // Kiểm tra xem direction có nằm trong danh sách hướng kết nối không
+        return pipeConnections[this.PipeType].Contains(direction) &&
+               pipeConnections[otherPipe.PipeType].Contains(-direction);
+    }
+
 }

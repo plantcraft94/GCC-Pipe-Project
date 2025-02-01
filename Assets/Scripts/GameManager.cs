@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -160,6 +160,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator GameFinished()
     {
         _winText.SetActive(true);
+        Debug.Log("win");
         _level.Column++;
         _level.Row++;
         GenerateLevelData(_level);
@@ -171,19 +172,27 @@ public class GameManager : MonoBehaviour
 
     private void GenerateLevelData(LevelData levelData)
     {
-        levelData.Data.Clear();
-        int totalCells = levelData.Row * levelData.Column;
+            levelData.Data.Clear();
+            int totalCells = levelData.Row * levelData.Column;
 
-        levelData.Data.Add(12);
-        for (int i = 1; i < totalCells - 1; i++)
-        {
-            int rotation = Random.Range(0, 4);
-            int pipeType = Random.Range(3, 6);
-            int pipeData = rotation * 10 + pipeType;
-            levelData.Data.Add(pipeData);
-        }
-        levelData.Data.Add(01);
+            levelData.Data.Add(11);
+
+            for (int i = 1; i < totalCells - 1; i++)
+            {
+                int rotation = Random.Range(0, 4);
+                int pipeType = Random.Range(3, 6);
+                int rand = Random.Range(0, 100);
+                if (rand == 0)
+                {
+                    pipeType = 0;
+                }
+                int pipeData = rotation * 10 + pipeType;
+                levelData.Data.Add(pipeData);
+            }
+            levelData.Data.Add(32);
+        EditorUtility.SetDirty(levelData);
     }
+
     public void ActivePowerUp()
     {
         if (PowerCount > 0)
@@ -192,4 +201,82 @@ public class GameManager : MonoBehaviour
         }
         print(isPowerUp);
     }
+    private bool CheckValidPath(LevelData levelData)
+    {
+        int rows = levelData.Row;
+        int cols = levelData.Column;
+
+        Pipe[,] pipes = new Pipe[rows, cols];
+        Vector2Int startPos = Vector2Int.zero;
+        Vector2Int endPos = new Vector2Int(rows - 1, cols - 1);
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                pipes[i, j] = GameObject.Instantiate(_cellPrefab);
+                pipes[i, j].Init(levelData.Data[i * cols + j]);
+
+                if (pipes[i, j].PipeType == 1) startPos = new Vector2Int(i, j);
+                if (pipes[i, j].PipeType == 2) endPos = new Vector2Int(i, j);
+            }
+        }
+
+        //BFS
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+
+        queue.Enqueue(startPos);
+        visited.Add(startPos);
+
+        while (queue.Count > 0)
+        {
+            Vector2Int current = queue.Dequeue();
+
+            if (current == endPos)
+            {
+                return true;
+            }
+
+            List<Vector2Int> neighbors = GetConnectedNeighbors(current, pipes, rows, cols);
+            foreach (var neighbor in neighbors)
+            {
+                if (!visited.Contains(neighbor))
+                {
+                    queue.Enqueue(neighbor);
+                    visited.Add(neighbor);
+                }
+            }
+        }
+
+        return false;
+    }
+    private List<Vector2Int> GetConnectedNeighbors(Vector2Int pos, Pipe[,] pipes, int rows, int cols)
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>();
+
+        Vector2Int[] directions = new Vector2Int[]
+        {
+        new Vector2Int(-1, 0),
+        new Vector2Int(1, 0),
+        new Vector2Int(0, -1),
+        new Vector2Int(0, 1)
+        };
+
+        foreach (var dir in directions)
+        {
+            Vector2Int neighbor = pos + dir;
+
+            if (neighbor.x >= 0 && neighbor.x < rows &&
+                neighbor.y >= 0 && neighbor.y < cols &&
+                pipes[pos.x, pos.y].IsConnectedTo(pipes[neighbor.x, neighbor.y], dir))
+            {
+                neighbors.Add(neighbor);
+            }
+        }
+
+        return neighbors;
+    }
+
 }
+

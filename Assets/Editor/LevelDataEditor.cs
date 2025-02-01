@@ -29,7 +29,7 @@ public class LevelDataEditor : Editor
         levelData.Data.Clear();
         int totalCells = levelData.Row * levelData.Column;
 
-        levelData.Data.Add(12);
+        levelData.Data.Add(11);
         for (int i = 1; i < totalCells-1; i++)
         {
             int rotation = Random.Range(0, 4);
@@ -37,7 +37,17 @@ public class LevelDataEditor : Editor
             int pipeData = rotation * 10 + pipeType;
             levelData.Data.Add(pipeData);
         }
-        levelData.Data.Add(01);
+        levelData.Data.Add(32);
         EditorUtility.SetDirty(levelData);
+    }
+    private void CheckLevel(LevelData levelData)
+    {
+        for (int i = 0; i < levelData.Row; i++)
+        {
+            for(int j = 0; j < levelData.Column; j++)
+            {
+
+            }
+        }
     }
 }
