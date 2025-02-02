@@ -13,6 +13,7 @@ public class Pipe : MonoBehaviour
 
     private Transform currentPipe;
     private int rotation;
+    public bool isRotating = false;
 
     private SpriteRenderer emptySprite;
     private SpriteRenderer filledSprite;
@@ -21,6 +22,11 @@ public class Pipe : MonoBehaviour
     private const int minRotation = 0;
     private const int maxRotation = 3;
     private const int rotationMultiplier = 90;
+
+    public float timeCount = 0.0f;
+    public Quaternion CurrentRotation;
+    public Quaternion TargetRotation;
+
 
     public void Init(int pipe)
     {
@@ -59,6 +65,20 @@ public class Pipe : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (isRotating == true)
+        {
+            currentPipe.transform.rotation = Quaternion.Slerp(CurrentRotation, TargetRotation, timeCount);
+            timeCount = timeCount * 1.2f + Time.deltaTime;
+            print(currentPipe.transform.rotation.eulerAngles);
+            if (currentPipe.transform.rotation.eulerAngles == TargetRotation.eulerAngles)
+            {
+                timeCount = 0f;
+                isRotating = false;
+            }
+        }
+    }
     public void UpdateInput()
     {
         if (PipeType == 0 || PipeType == 1 || PipeType == 2)
@@ -86,8 +106,11 @@ public class Pipe : MonoBehaviour
             return;
         }
 
+        CurrentRotation = currentPipe.transform.rotation;
         rotation = (rotation + 1) % (maxRotation + 1);
-        currentPipe.transform.eulerAngles = new Vector3(0, 0, rotation * rotationMultiplier);
+        TargetRotation = Quaternion.Euler(0, 0, rotation * rotationMultiplier);
+        print("Target Rotation is: " + TargetRotation.eulerAngles);
+        isRotating = true;
     }
 
     public void UpdateFilled()
