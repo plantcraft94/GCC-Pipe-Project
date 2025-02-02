@@ -13,11 +13,14 @@ public class GameManager : MonoBehaviour
     private bool hasGameFinished;
     private Pipe[,] pipes;
     private List<Pipe> startPipes;
+    public bool Win = false;
 
     public static bool isPowerUp = false;
     public static int PowerCount = 2;
 
     [SerializeField] private GameObject _winText;
+
+    [SerializeField] private Timer timer;
 
     private void Awake()
     {
@@ -161,16 +164,19 @@ public class GameManager : MonoBehaviour
     {
         _winText.SetActive(true);
         Debug.Log("win");
+        Win = true;
         _level.Column++;
         _level.Row++;
         GenerateLevelData(_level);
         yield return new WaitForSeconds(2f);
         PowerCount++;
+        timer.AddTime(60f);
+        Win = false;
         UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
 
 
-    private void GenerateLevelData(LevelData levelData)
+    public void GenerateLevelData(LevelData levelData)
     {
             levelData.Data.Clear();
             int totalCells = levelData.Row * levelData.Column;
