@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-    public static float timer = 60f;
+    public static float pubTime = 45f;
+    static float timer = pubTime;
     GameManager GM;
     public GameObject Losetext;
     TextMeshProUGUI textMeshProUGUI;
@@ -37,7 +38,7 @@ public class Timer : MonoBehaviour
             GM.GenerateLevelData(_level);
             yield return new WaitForSeconds(2f);
             GameManager.PowerCount = 2;
-            timer = 60f;
+            timer = pubTime;
             UnityEngine.SceneManagement.SceneManager.LoadScene(1);
         }
     }

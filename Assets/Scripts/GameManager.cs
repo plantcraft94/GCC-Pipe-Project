@@ -170,7 +170,7 @@ public class GameManager : MonoBehaviour
         GenerateLevelData(_level);
         yield return new WaitForSeconds(2f);
         PowerCount++;
-        timer.AddTime(60f);
+        timer.AddTime(30f);
         Win = false;
         UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }

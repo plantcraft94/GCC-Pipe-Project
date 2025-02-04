@@ -27,6 +27,8 @@ public class Pipe : MonoBehaviour
     public Quaternion CurrentRotation;
     public Quaternion TargetRotation;
 
+    AudioSource pipeTurnSound;
+
 
     public void Init(int pipe)
     {
@@ -63,6 +65,11 @@ public class Pipe : MonoBehaviour
         {
             connectBoxes.Add(currentPipe.GetChild(i));
         }
+    }
+
+    private void Awake()
+    {
+        pipeTurnSound = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -111,6 +118,8 @@ public class Pipe : MonoBehaviour
         TargetRotation = Quaternion.Euler(0, 0, rotation * rotationMultiplier);
         print("Target Rotation is: " + TargetRotation.eulerAngles);
         isRotating = true;
+
+        pipeTurnSound.Play();
     }
 
     public void UpdateFilled()
