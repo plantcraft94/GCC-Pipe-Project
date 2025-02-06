@@ -78,7 +78,6 @@ public class Pipe : MonoBehaviour
         {
             currentPipe.transform.rotation = Quaternion.Slerp(CurrentRotation, TargetRotation, timeCount);
             timeCount = timeCount * 1.2f + Time.deltaTime;
-            print(currentPipe.transform.rotation.eulerAngles);
             if (currentPipe.transform.rotation.eulerAngles == TargetRotation.eulerAngles)
             {
                 timeCount = 0f;
@@ -116,7 +115,6 @@ public class Pipe : MonoBehaviour
         CurrentRotation = currentPipe.transform.rotation;
         rotation = (rotation + 1) % (maxRotation + 1);
         TargetRotation = Quaternion.Euler(0, 0, rotation * rotationMultiplier);
-        print("Target Rotation is: " + TargetRotation.eulerAngles);
         isRotating = true;
 
         pipeTurnSound.Play();
